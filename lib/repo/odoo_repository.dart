@@ -1,5 +1,6 @@
 // ignore_for_file: inference_failure_on_collection_literal
 
+import 'package:dart_odoo_api/models/project_tasks_model.dart';
 import 'package:dart_odoo_api/models/sales_record_model.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
 
@@ -203,6 +204,41 @@ class OdooRepository {
       final parsedData = data.map(SalesOrder.fromJson).toList();
 
       return parsedData.first;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<List<ProjectTasks>?> fetchAllTasks() async {
+    final specification = {
+      'date_assign': {},
+      'date_deadline': {},
+      'name': {},
+      'sale_line_id': {
+        'fields': {
+          'id': {},
+          'display_name': {},
+        },
+      },
+    };
+
+    try {
+      final response = await client.callKw({
+        'model': 'project.task',
+        'method': 'web_search_read',
+        'args': [
+          [],
+          specification,
+        ],
+        'kwargs': {},
+      });
+
+      final data =
+          ((response as Map<String, dynamic>)['records'] as List<dynamic>)
+              .cast<Map<String, dynamic>>();
+      final parsedData = data.map(ProjectTasks.fromJson).toList();
+
+      return parsedData;
     } catch (e) {
       return null;
     }

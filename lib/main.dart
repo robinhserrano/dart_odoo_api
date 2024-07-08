@@ -29,7 +29,7 @@ Future<void> main() async {
     print(
         'Fetch Sales Success! : ${salesEnd.difference(salesStart).inMilliseconds}');
 
-    //Upload fetched odoo to AWS
+    // //Upload fetched odoo to AWS
     if (sales != null) {
       var uploadStart = DateTime.now();
       print('uploading sales...');
@@ -42,6 +42,33 @@ Future<void> main() async {
       print(
           'Upload Sales Success! : ${uploadEnd.difference(uploadStart).inMilliseconds}');
     }
+
+    //Fetch Project Tasks Odoo
+    var tasksStart = DateTime.now();
+    print('filtering task deadline from sales...');
+    var tasks = await odooRepo.fetchAllTasks();
+    var tasksEnd = DateTime.now();
+    print(
+        'Task Deadline Success! : ${tasksEnd.difference(tasksStart).inMilliseconds}');
+
+//Upload task data_deadline via AwsSalesOrder id
+//{'id': 'date_deadline'}
+    var tasksDeadline = [];
+    if (tasks != null && sales != null) {
+      for (var task in tasks) {
+        if (task.dateDeadline != null) {
+          for (var sale in sales) {
+            var taskName = task.saleLineId?.displayName?.split('-')[0].trim();
+            var salesName = sale.name;
+            if (taskName == salesName) {
+              tasksDeadline.add({'${sale.id}': '${task.dateDeadline}'});
+              break;
+            }
+          }
+        }
+      }
+    }
+
     var totalEnd = DateTime.now();
     print('Total Time: ${totalEnd.difference(totalStart).inMilliseconds}');
   } catch (e) {
