@@ -36,4 +36,30 @@ class Repository {
       return false;
     }
   }
+
+  Future<bool> updateDeadlinesBulk(
+    List<Map<String, dynamic>> dataList,
+  ) async {
+    try {
+      final response = await client.post<dynamic>(
+        '$url/bulkUpdateDeadlines',
+        options: Options(
+          headers: {
+            HttpHeaders.authorizationHeader: 'Bearer $ACCESS_TOKEN',
+            HttpHeaders.contentTypeHeader: 'application/json',
+            HttpHeaders.acceptHeader: 'application/json',
+          },
+        ),
+        data: dataList,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
 }

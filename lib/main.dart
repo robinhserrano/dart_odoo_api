@@ -29,7 +29,7 @@ Future<void> main() async {
     print(
         'Fetch Sales Success! : ${salesEnd.difference(salesStart).inMilliseconds}');
 
-    // //Upload fetched odoo to AWS
+    //Upload fetched odoo to AWS
     if (sales != null) {
       var uploadStart = DateTime.now();
       print('uploading sales...');
@@ -53,7 +53,7 @@ Future<void> main() async {
 
 //Upload task data_deadline via AwsSalesOrder id
 //{'id': 'date_deadline'}
-    var tasksDeadline = [];
+    final tasksDeadline = <Map<String, dynamic>>[];
     if (tasks != null && sales != null) {
       for (var task in tasks) {
         if (task.dateDeadline != null) {
@@ -61,7 +61,10 @@ Future<void> main() async {
             var taskName = task.saleLineId?.displayName?.split('-')[0].trim();
             var salesName = sale.name;
             if (taskName == salesName) {
-              tasksDeadline.add({'${sale.id}': '${task.dateDeadline}'});
+              tasksDeadline.add({
+                'name': '${sale.name}',
+                'date_deadline': '${task.dateDeadline}'
+              });
               break;
             }
           }
@@ -69,6 +72,21 @@ Future<void> main() async {
       }
     }
 
+    //Upload fetched deadlines odoo to AWS
+    if (tasksDeadline.isNotEmpty) {
+      var uploadStart = DateTime.now();
+      print('uploading deadlines...');
+      await updateDeadlinesBulk(tasksDeadline, (value) {
+        print('Progress :$value');
+        print(
+            'Time Taken (deadline): ${DateTime.now().difference(uploadStart).inMilliseconds}');
+      });
+      var uploadEnd = DateTime.now();
+      print(
+          'Upload Deadlines Success! : ${uploadEnd.difference(uploadStart).inMilliseconds}');
+    }
+
+    //end
     var totalEnd = DateTime.now();
     print('Total Time: ${totalEnd.difference(totalStart).inMilliseconds}');
   } catch (e) {
@@ -146,6 +164,39 @@ Future<bool> saveAwsSalesBulk(
       final progress = (totalSales / totalSales) * 100;
       onProgress(progress);
     }
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+Future<bool> updateDeadlinesBulk(
+  List<Map<String, dynamic>> dateDeadlines,
+  void Function(double) onProgress,
+) async {
+  Repository repo = Repository(client: Dio());
+  final totalSales = dateDeadlines.length;
+
+  try {
+    // const chunkSize = 500;
+    // var currentChunk = <Map<String, dynamic>>[];
+
+    // for (final dateDeadline in dateDeadlines) {
+    //   currentChunk.add(dateDeadline);
+    //   if (currentChunk.length == chunkSize) {
+    //     await repo.updateDeadlinesBulk(currentChunk);
+    //     final progress = (currentChunk.length / totalSales) * 100;
+    //     onProgress(progress);
+    //     currentChunk = [];
+    //   }
+    // }
+
+    // if (currentChunk.isNotEmpty) {
+    await repo.updateDeadlinesBulk(dateDeadlines);
+    final progress = (totalSales / totalSales) * 100;
+    onProgress(progress);
+    //   }
 
     return true;
   } catch (e) {
