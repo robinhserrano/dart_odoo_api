@@ -7,6 +7,7 @@ import 'package:odoo_rpc/odoo_rpc.dart';
 
 Future<void> main() async {
   OdooRepository odooRepo = OdooRepository(client: OdooClient(DB_URL));
+  Repository repo = Repository(client: Dio());
 
   try {
     //Auth login odoo
@@ -51,8 +52,7 @@ Future<void> main() async {
     print(
         'Task Deadline Success! : ${tasksEnd.difference(tasksStart).inMilliseconds}');
 
-//Upload task data_deadline via AwsSalesOrder id
-//{'id': 'date_deadline'}
+    //Upload task data_deadline via AwsSalesOrder id
     final tasksDeadline = <Map<String, dynamic>>[];
     if (tasks != null && sales != null) {
       for (var task in tasks) {
@@ -86,8 +86,65 @@ Future<void> main() async {
           'Upload Deadlines Success! : ${uploadEnd.difference(uploadStart).inMilliseconds}');
     }
 
-    //end
+    //fetch AWS Users
+    var usersStart = DateTime.now();
+    print('fetching sales...');
+    var users = await repo.fetchUsers();
+    var usersEnd = DateTime.now();
+    print(
+        'Fetch users Success! : ${usersEnd.difference(usersStart).inMilliseconds}');
+    //fetch AWS Sales
+    var awsSalesStart = DateTime.now();
+    print('fetching sales...');
+    var awsSales = await repo.fetchSales();
+    var awsSalesEnd = DateTime.now();
+    print(
+        'Fetch awsSales Success! : ${awsSalesEnd.difference(awsSalesStart).inMilliseconds}');
+
+    final salesOrderUserIds = <Map<String, dynamic>>[];
+    final salesOrderNoUserIds = <Map<String, dynamic>>[];
+    if (users != null && awsSales != null) {
+      for (var awsSale in awsSales) {
+        for (var user in users) {
+          var salesRepName = awsSale.xStudioSalesRep1;
+          var userName = user.displayName;
+
+          var userId = 0;
+          if ((salesRepName ?? '').toLowerCase() == userName.toLowerCase()) {
+            userId = user.id;
+          }
+
+          if (userId > 0) {
+            salesOrderUserIds
+                .add({'id': '${awsSale.id}', 'user_id': '$userId'});
+            break;
+          } else {
+            salesOrderNoUserIds.add({
+              'id': '${awsSale.id}',
+              'user_id': '$userId',
+            });
+          }
+        }
+      }
+    }
+
+    var filteredSalesOrderUserIds = salesOrderUserIds.toSet().toList();
+
+    if (filteredSalesOrderUserIds.isNotEmpty) {
+      var uploadStart = DateTime.now();
+      print('uploading salesOrderUserIds...');
+      await updateSalesOrderUserIds(filteredSalesOrderUserIds, (value) {
+        print('Progress :$value');
+        print(
+            'Time Taken (salesOrderUserIds): ${DateTime.now().difference(uploadStart).inMilliseconds}');
+      });
+      var uploadEnd = DateTime.now();
+      print(
+          'Upload salesOrderUserIds Success! : ${uploadEnd.difference(uploadStart).inMilliseconds}');
+    }
+
     var totalEnd = DateTime.now();
+
     print('Total Time: ${totalEnd.difference(totalStart).inMilliseconds}');
   } catch (e) {
     print(e);
@@ -171,6 +228,23 @@ Future<bool> saveAwsSalesBulk(
   }
 }
 
+Future<bool> updateSalesOrderUserIds(
+  List<Map<String, dynamic>> salesOrderUserIds,
+  void Function(double) onProgress,
+) async {
+  Repository repo = Repository(client: Dio());
+  final totalSales = salesOrderUserIds.length;
+
+  try {
+    await repo.updateSalesOrderUserIds(salesOrderUserIds);
+    final progress = (totalSales / totalSales) * 100;
+    onProgress(progress);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 Future<bool> updateDeadlinesBulk(
   List<Map<String, dynamic>> dateDeadlines,
   void Function(double) onProgress,
@@ -179,25 +253,9 @@ Future<bool> updateDeadlinesBulk(
   final totalSales = dateDeadlines.length;
 
   try {
-    // const chunkSize = 500;
-    // var currentChunk = <Map<String, dynamic>>[];
-
-    // for (final dateDeadline in dateDeadlines) {
-    //   currentChunk.add(dateDeadline);
-    //   if (currentChunk.length == chunkSize) {
-    //     await repo.updateDeadlinesBulk(currentChunk);
-    //     final progress = (currentChunk.length / totalSales) * 100;
-    //     onProgress(progress);
-    //     currentChunk = [];
-    //   }
-    // }
-
-    // if (currentChunk.isNotEmpty) {
     await repo.updateDeadlinesBulk(dateDeadlines);
     final progress = (totalSales / totalSales) * 100;
     onProgress(progress);
-    //   }
-
     return true;
   } catch (e) {
     return false;

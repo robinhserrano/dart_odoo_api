@@ -28,6 +28,16 @@ class BoolRefferedByConverter extends JsonConverter<DisplayNameModel, dynamic> {
   dynamic toJson(DisplayNameModel object) => object;
 }
 
+class IntToBooleanConverter implements JsonConverter<bool, int?> {
+  const IntToBooleanConverter();
+
+  @override
+  bool fromJson(int? json) => json == 1;
+
+  @override
+  int? toJson(bool object) => object ? 1 : 0;
+}
+
 // class BoolDatetimeConverter extends JsonConverter<DateTime?, dynamic> {
 //   const BoolDatetimeConverter();
 
