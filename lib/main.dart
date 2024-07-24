@@ -20,7 +20,8 @@ Future<void> main() async {
       PASSWORD,
     );
     var loginEnd = DateTime.now();
-    print('Login Success! : ${loginEnd.difference(loginStart).inMilliseconds}');
+    print(
+        '_ Login Success! : ${loginEnd.difference(loginStart).inMilliseconds}');
 
     //Sales Fetch from Odoo
     var salesStart = DateTime.now();
@@ -28,7 +29,7 @@ Future<void> main() async {
     var sales = await odooRepo.fetchSales();
     var salesEnd = DateTime.now();
     print(
-        'Fetch Sales Success! : ${salesEnd.difference(salesStart).inMilliseconds}');
+        '_ Fetch Sales Success! : ${salesEnd.difference(salesStart).inMilliseconds}');
 
     //Upload fetched odoo to AWS
     if (sales != null) {
@@ -41,7 +42,7 @@ Future<void> main() async {
       });
       var uploadEnd = DateTime.now();
       print(
-          'Upload Sales Success! : ${uploadEnd.difference(uploadStart).inMilliseconds}');
+          '_ Upload Sales Success! : ${uploadEnd.difference(uploadStart).inMilliseconds}');
     }
 
     //Fetch Project Tasks Odoo
@@ -50,7 +51,7 @@ Future<void> main() async {
     var tasks = await odooRepo.fetchAllTasks();
     var tasksEnd = DateTime.now();
     print(
-        'Task Deadline Success! : ${tasksEnd.difference(tasksStart).inMilliseconds}');
+        '_ Task Deadline Success! : ${tasksEnd.difference(tasksStart).inMilliseconds}');
 
     //Upload task data_deadline via AwsSalesOrder id
     final tasksDeadline = <Map<String, dynamic>>[];
@@ -83,7 +84,7 @@ Future<void> main() async {
       });
       var uploadEnd = DateTime.now();
       print(
-          'Upload Deadlines Success! : ${uploadEnd.difference(uploadStart).inMilliseconds}');
+          '_ Upload Deadlines Success! : ${uploadEnd.difference(uploadStart).inMilliseconds}');
     }
 
     //fetch AWS Users
@@ -92,14 +93,14 @@ Future<void> main() async {
     var users = await repo.fetchUsers();
     var usersEnd = DateTime.now();
     print(
-        'Fetch users Success! : ${usersEnd.difference(usersStart).inMilliseconds}');
+        '_ Fetch users Success! : ${usersEnd.difference(usersStart).inMilliseconds}');
     //fetch AWS Sales
     var awsSalesStart = DateTime.now();
     print('fetching sales...');
     var awsSales = await repo.fetchSales();
     var awsSalesEnd = DateTime.now();
     print(
-        'Fetch awsSales Success! : ${awsSalesEnd.difference(awsSalesStart).inMilliseconds}');
+        '_ Fetch awsSales Success! : ${awsSalesEnd.difference(awsSalesStart).inMilliseconds}');
 
     final salesOrderUserIds = <Map<String, dynamic>>[];
     final salesOrderNoUserIds = <Map<String, dynamic>>[];
@@ -140,12 +141,16 @@ Future<void> main() async {
       });
       var uploadEnd = DateTime.now();
       print(
-          'Upload salesOrderUserIds Success! : ${uploadEnd.difference(uploadStart).inMilliseconds}');
+          '_ Upload salesOrderUserIds Success! : ${uploadEnd.difference(uploadStart).inMilliseconds}');
     }
 
-    var totalEnd = DateTime.now();
+    await repo.postOdooSyncLog(awsSales?.length ?? 0);
 
-    print('Total Time: ${totalEnd.difference(totalStart).inMilliseconds}');
+    var filteredData = awsSales?.where((e) => e.state == 'sale').toList();
+
+    var totalEnd = DateTime.now();
+    print('_ OdooSyncLogged - Total Items : ${filteredData?.length ?? 0}');
+    print('_ Total Time: ${totalEnd.difference(totalStart).inMilliseconds}');
   } catch (e) {
     print(e);
   }
