@@ -1,3 +1,4 @@
+import 'package:dart_odoo_api/models/aws_product_stocks_model.dart';
 import 'package:dio/dio.dart';
 import 'package:dart_odoo_api/env.dart';
 import 'package:dart_odoo_api/models/sales_record_model.dart';
@@ -22,6 +23,65 @@ Future<void> main() async {
     var loginEnd = DateTime.now();
     print(
         '_ Login Success! : ${loginEnd.difference(loginStart).inMilliseconds}');
+
+    //warehouse Fetch from Odoo
+    var warehouseStart = DateTime.now();
+    print('fetching warehouse...');
+    var warehouse = await odooRepo.getCurrentWarehouses();
+    var warehouseEnd = DateTime.now();
+    print(
+        '_ Fetch warehouse Success! : ${warehouseEnd.difference(warehouseStart).inMilliseconds}');
+
+    //Upload odoo warehouse to AWS
+    List<int> warehouseIds = [];
+    if (warehouse != null) {
+      var uploadStart = DateTime.now();
+      print('uploading warehouse...');
+      await saveAwsCurrentWarehouse(warehouse, (value) {
+        print('Progress :$value');
+        print(
+            'Time Taken : ${DateTime.now().difference(uploadStart).inMilliseconds}');
+      });
+      var uploadEnd = DateTime.now();
+      print(
+          '_ Upload warehouse Success! : ${uploadEnd.difference(uploadStart).inMilliseconds}');
+
+      for (var item in warehouse) {
+        warehouseIds.add(item.id);
+      }
+      warehouseIds.add(0);
+    }
+
+    //Stocks Fetch from Odoo
+    var stocksStart = DateTime.now();
+    print('fetching stocks...');
+
+    List<AwsProductStocks> stocksList = [];
+
+    for (var id in warehouseIds) {
+      var stocks = await odooRepo.fetchStocks(id);
+      if (stocks != null && stocks.isNotEmpty) {
+        stocksList.addAll(stocks);
+      }
+    }
+
+    var stocksEnd = DateTime.now();
+    print(
+        '_ Fetch stocks Success! : ${stocksEnd.difference(stocksStart).inMilliseconds}');
+
+    //Upload odoo stocks to AWS
+    if (stocksList.isNotEmpty) {
+      var uploadStart = DateTime.now();
+      print('uploading warehouse...');
+      await saveAwsProductStocks(stocksList, (value) {
+        print('Progress :$value');
+        print(
+            'Time Taken : ${DateTime.now().difference(uploadStart).inMilliseconds}');
+      });
+      var uploadEnd = DateTime.now();
+      print(
+          '_ Upload warehouse Success! : ${uploadEnd.difference(uploadStart).inMilliseconds}');
+    }
 
     //Sales Fetch from Odoo
     var salesStart = DateTime.now();
@@ -261,6 +321,97 @@ Future<bool> updateDeadlinesBulk(
     await repo.updateDeadlinesBulk(dateDeadlines);
     final progress = (totalSales / totalSales) * 100;
     onProgress(progress);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+Future<bool> saveAwsCurrentWarehouse(
+  List<CurrentWarehouse> currentWarehouses,
+  void Function(double) onProgress,
+) async {
+  Repository repo = Repository(client: Dio());
+  final totalSales = currentWarehouses.length;
+
+  try {
+    final dataList = <Map<String, dynamic>>[];
+    for (final warehouse in currentWarehouses) {
+      dataList.add({
+        'warehouse_id': warehouse.id,
+        'name': warehouse.name,
+        'code': warehouse.code,
+      });
+    }
+
+    const chunkSize = 500;
+    var currentChunk = <Map<String, dynamic>>[];
+
+    for (final salesOrder in dataList) {
+      currentChunk.add(salesOrder);
+      if (currentChunk.length == chunkSize) {
+        await repo.saveBulkWarehouse(currentChunk);
+        final progress = (currentChunk.length / totalSales) * 100;
+        onProgress(progress);
+        currentChunk = [];
+      }
+    }
+
+    if (currentChunk.isNotEmpty) {
+      await repo.saveBulkWarehouse(currentChunk);
+      final progress = (totalSales / totalSales) * 100;
+      onProgress(progress);
+    }
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+Future<bool> saveAwsProductStocks(
+  List<AwsProductStocks> productStocks,
+  void Function(double) onProgress,
+) async {
+  Repository repo = Repository(client: Dio());
+  final totalProductStocks = productStocks.length;
+
+  try {
+    final dataList = <Map<String, dynamic>>[];
+    for (final stocks in productStocks) {
+      dataList.add({
+        'display_name': stocks.displayName,
+        'categ_name': stocks.categId?.displayName,
+        'avg_cost': stocks.avgCost,
+        'total_value': stocks.totalValue,
+        'qty_available': stocks.qtyAvailable,
+        'free_qty': stocks.freeQty,
+        'incoming_qty': stocks.incomingQty,
+        'outgoing_qty': stocks.outgoingQty,
+        'virtual_available': stocks.virtualAvailable,
+        'warehouse_id': stocks.warehouseId,
+      });
+    }
+
+    const chunkSize = 500;
+    var currentChunk = <Map<String, dynamic>>[];
+
+    for (final stock in dataList) {
+      currentChunk.add(stock);
+      if (currentChunk.length == chunkSize) {
+        await repo.saveBulkProductStocks(currentChunk);
+        final progress = (currentChunk.length / totalProductStocks) * 100;
+        onProgress(progress);
+        currentChunk = [];
+      }
+    }
+
+    if (currentChunk.isNotEmpty) {
+      await repo.saveBulkProductStocks(currentChunk);
+      final progress = (totalProductStocks / totalProductStocks) * 100;
+      onProgress(progress);
+    }
+
     return true;
   } catch (e) {
     return false;

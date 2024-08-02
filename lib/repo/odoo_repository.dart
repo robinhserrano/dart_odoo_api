@@ -1,5 +1,6 @@
 // ignore_for_file: inference_failure_on_collection_literal
 
+import 'package:dart_odoo_api/models/aws_product_stocks_model.dart';
 import 'package:dart_odoo_api/models/project_tasks_model.dart';
 import 'package:dart_odoo_api/models/sales_record_model.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
@@ -237,6 +238,79 @@ class OdooRepository {
           ((response as Map<String, dynamic>)['records'] as List<dynamic>)
               .cast<Map<String, dynamic>>();
       final parsedData = data.map(ProjectTasks.fromJson).toList();
+
+      return parsedData;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<List<AwsProductStocks>?> fetchStocks(
+    int warehouseId,
+  ) async {
+    final specification = {
+      "id": {},
+      "display_name": {},
+      "categ_id": {
+        "fields": {"display_name": {}}
+      },
+      "company_currency_id": {"fields": {}},
+      "cost_method": {},
+      "avg_cost": {},
+      "total_value": {},
+      "qty_available": {},
+      "free_qty": {},
+      "incoming_qty": {},
+      "outgoing_qty": {},
+      "virtual_available": {}
+    };
+
+    try {
+      final response = await client.callKw({
+        'model': 'product.product',
+        'method': 'web_search_read',
+        'args': [
+          [
+            ["detailed_type", "=", "product"]
+          ],
+          specification,
+        ],
+        'kwargs': {
+          //modify this, if warehouseNum > 0 show
+          if (warehouseId > 0) "context": {"warehouse": warehouseId}
+        },
+      });
+
+      final data =
+          ((response as Map<String, dynamic>)['records'] as List<dynamic>)
+              .cast<Map<String, dynamic>>();
+      final parsedData = data.map(AwsProductStocks.fromJson).toList();
+
+      List<AwsProductStocks> modifiedData = [];
+
+      for (var item in parsedData) {
+        modifiedData.add(item.copyWith(warehouseId: warehouseId));
+      }
+
+      return modifiedData;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<List<CurrentWarehouse>?> getCurrentWarehouses() async {
+    try {
+      final response = await client.callKw({
+        'model': 'stock.warehouse',
+        'method': 'get_current_warehouses',
+        'args': [
+          [],
+        ],
+        'kwargs': {},
+      });
+
+      final data = (response as List<dynamic>).cast<Map<String, dynamic>>();
+      final parsedData = data.map(CurrentWarehouse.fromJson).toList();
 
       return parsedData;
     } catch (e) {
