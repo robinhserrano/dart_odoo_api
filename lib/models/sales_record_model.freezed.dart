@@ -30,6 +30,7 @@ mixin _$SalesOrder {
   @BoolStringConverter()
   String? get xStudioSalesRep1 => throw _privateConstructorUsedError; //F
   @JsonKey(name: 'x_studio_sales_source')
+  @BoolStringConverter()
   String get xStudioSalesSource => throw _privateConstructorUsedError; //G
   @JsonKey(name: 'x_studio_commission_paid')
   bool get xStudioCommissionPaid => throw _privateConstructorUsedError; //H,
@@ -39,6 +40,7 @@ mixin _$SalesOrder {
   @JsonKey(name: 'x_studio_referrer_processed')
   bool get xStudioReferrerProcessed => throw _privateConstructorUsedError; //J,
   @JsonKey(name: 'x_studio_payment_type')
+  @BoolStringConverter()
   String get xStudioPaymentType => throw _privateConstructorUsedError; //K
   @JsonKey(name: 'amount_total')
   double? get amountTotal => throw _privateConstructorUsedError; // L
@@ -85,14 +87,18 @@ abstract class $SalesOrderCopyWith<$Res> {
       @JsonKey(name: 'x_studio_sales_rep_1')
       @BoolStringConverter()
       String? xStudioSalesRep1,
-      @JsonKey(name: 'x_studio_sales_source') String xStudioSalesSource,
+      @JsonKey(name: 'x_studio_sales_source')
+      @BoolStringConverter()
+      String xStudioSalesSource,
       @JsonKey(name: 'x_studio_commission_paid') bool xStudioCommissionPaid,
       @JsonKey(name: 'x_studio_referred_by')
       @BoolRefferedByConverter()
       DisplayNameModel xStudioReferredBy,
       @JsonKey(name: 'x_studio_referrer_processed')
       bool xStudioReferrerProcessed,
-      @JsonKey(name: 'x_studio_payment_type') String xStudioPaymentType,
+      @JsonKey(name: 'x_studio_payment_type')
+      @BoolStringConverter()
+      String xStudioPaymentType,
       @JsonKey(name: 'amount_total') double? amountTotal,
       @JsonKey(name: 'delivery_status') dynamic deliveryStatus,
       @JsonKey(name: 'amount_to_invoice') double? amountToInvoice,
@@ -313,14 +319,18 @@ abstract class _$$SalesOrderImplCopyWith<$Res>
       @JsonKey(name: 'x_studio_sales_rep_1')
       @BoolStringConverter()
       String? xStudioSalesRep1,
-      @JsonKey(name: 'x_studio_sales_source') String xStudioSalesSource,
+      @JsonKey(name: 'x_studio_sales_source')
+      @BoolStringConverter()
+      String xStudioSalesSource,
       @JsonKey(name: 'x_studio_commission_paid') bool xStudioCommissionPaid,
       @JsonKey(name: 'x_studio_referred_by')
       @BoolRefferedByConverter()
       DisplayNameModel xStudioReferredBy,
       @JsonKey(name: 'x_studio_referrer_processed')
       bool xStudioReferrerProcessed,
-      @JsonKey(name: 'x_studio_payment_type') String xStudioPaymentType,
+      @JsonKey(name: 'x_studio_payment_type')
+      @BoolStringConverter()
+      String xStudioPaymentType,
       @JsonKey(name: 'amount_total') double? amountTotal,
       @JsonKey(name: 'delivery_status') dynamic deliveryStatus,
       @JsonKey(name: 'amount_to_invoice') double? amountToInvoice,
@@ -483,7 +493,9 @@ class _$SalesOrderImpl implements _SalesOrder {
       @JsonKey(name: 'x_studio_sales_rep_1')
       @BoolStringConverter()
       required this.xStudioSalesRep1,
-      @JsonKey(name: 'x_studio_sales_source') required this.xStudioSalesSource,
+      @JsonKey(name: 'x_studio_sales_source')
+      @BoolStringConverter()
+      required this.xStudioSalesSource,
       @JsonKey(name: 'x_studio_commission_paid')
       required this.xStudioCommissionPaid,
       @JsonKey(name: 'x_studio_referred_by')
@@ -491,7 +503,9 @@ class _$SalesOrderImpl implements _SalesOrder {
       required this.xStudioReferredBy,
       @JsonKey(name: 'x_studio_referrer_processed')
       required this.xStudioReferrerProcessed,
-      @JsonKey(name: 'x_studio_payment_type') required this.xStudioPaymentType,
+      @JsonKey(name: 'x_studio_payment_type')
+      @BoolStringConverter()
+      required this.xStudioPaymentType,
       @JsonKey(name: 'amount_total') required this.amountTotal,
       @JsonKey(name: 'delivery_status') required this.deliveryStatus,
       @JsonKey(name: 'amount_to_invoice') required this.amountToInvoice,
@@ -530,6 +544,7 @@ class _$SalesOrderImpl implements _SalesOrder {
 //F
   @override
   @JsonKey(name: 'x_studio_sales_source')
+  @BoolStringConverter()
   final String xStudioSalesSource;
 //G
   @override
@@ -546,6 +561,7 @@ class _$SalesOrderImpl implements _SalesOrder {
 //J,
   @override
   @JsonKey(name: 'x_studio_payment_type')
+  @BoolStringConverter()
   final String xStudioPaymentType;
 //K
   @override
@@ -704,6 +720,7 @@ abstract class _SalesOrder implements SalesOrder {
       @BoolStringConverter()
       required final String? xStudioSalesRep1,
       @JsonKey(name: 'x_studio_sales_source')
+      @BoolStringConverter()
       required final String xStudioSalesSource,
       @JsonKey(name: 'x_studio_commission_paid')
       required final bool xStudioCommissionPaid,
@@ -713,6 +730,7 @@ abstract class _SalesOrder implements SalesOrder {
       @JsonKey(name: 'x_studio_referrer_processed')
       required final bool xStudioReferrerProcessed,
       @JsonKey(name: 'x_studio_payment_type')
+      @BoolStringConverter()
       required final String xStudioPaymentType,
       @JsonKey(name: 'amount_total') required final double? amountTotal,
       @JsonKey(name: 'delivery_status') required final dynamic deliveryStatus,
@@ -753,6 +771,7 @@ abstract class _SalesOrder implements SalesOrder {
   String? get xStudioSalesRep1;
   @override //F
   @JsonKey(name: 'x_studio_sales_source')
+  @BoolStringConverter()
   String get xStudioSalesSource;
   @override //G
   @JsonKey(name: 'x_studio_commission_paid')
@@ -766,6 +785,7 @@ abstract class _SalesOrder implements SalesOrder {
   bool get xStudioReferrerProcessed;
   @override //J,
   @JsonKey(name: 'x_studio_payment_type')
+  @BoolStringConverter()
   String get xStudioPaymentType;
   @override //K
   @JsonKey(name: 'amount_total')

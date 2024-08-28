@@ -18,12 +18,14 @@ _$SalesOrderImpl _$$SalesOrderImplFromJson(Map<String, dynamic> json) =>
           : PartnerIdModel.fromJson(json['partner_id'] as Map<String, dynamic>),
       xStudioSalesRep1:
           const BoolStringConverter().fromJson(json['x_studio_sales_rep_1']),
-      xStudioSalesSource: json['x_studio_sales_source'] as String,
+      xStudioSalesSource:
+          const BoolStringConverter().fromJson(json['x_studio_sales_source']),
       xStudioCommissionPaid: json['x_studio_commission_paid'] as bool,
       xStudioReferredBy: const BoolRefferedByConverter()
           .fromJson(json['x_studio_referred_by']),
       xStudioReferrerProcessed: json['x_studio_referrer_processed'] as bool,
-      xStudioPaymentType: json['x_studio_payment_type'] as String,
+      xStudioPaymentType:
+          const BoolStringConverter().fromJson(json['x_studio_payment_type']),
       amountTotal: (json['amount_total'] as num?)?.toDouble(),
       deliveryStatus: json['delivery_status'],
       amountToInvoice: (json['amount_to_invoice'] as num?)?.toDouble(),
@@ -51,12 +53,14 @@ Map<String, dynamic> _$$SalesOrderImplToJson(_$SalesOrderImpl instance) =>
       'partner_id': instance.partnerId,
       'x_studio_sales_rep_1': _$JsonConverterToJson<dynamic, String>(
           instance.xStudioSalesRep1, const BoolStringConverter().toJson),
-      'x_studio_sales_source': instance.xStudioSalesSource,
+      'x_studio_sales_source':
+          const BoolStringConverter().toJson(instance.xStudioSalesSource),
       'x_studio_commission_paid': instance.xStudioCommissionPaid,
       'x_studio_referred_by':
           const BoolRefferedByConverter().toJson(instance.xStudioReferredBy),
       'x_studio_referrer_processed': instance.xStudioReferrerProcessed,
-      'x_studio_payment_type': instance.xStudioPaymentType,
+      'x_studio_payment_type':
+          const BoolStringConverter().toJson(instance.xStudioPaymentType),
       'amount_total': instance.amountTotal,
       'delivery_status': instance.deliveryStatus,
       'amount_to_invoice': instance.amountToInvoice,

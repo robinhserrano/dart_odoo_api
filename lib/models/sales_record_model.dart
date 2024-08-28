@@ -16,6 +16,7 @@ class SalesOrder with _$SalesOrder {
     @BoolStringConverter()
     required String? xStudioSalesRep1, //F
     @JsonKey(name: 'x_studio_sales_source')
+    @BoolStringConverter()
     required String xStudioSalesSource, //G
     @JsonKey(name: 'x_studio_commission_paid')
     required bool xStudioCommissionPaid, //H,
@@ -25,6 +26,7 @@ class SalesOrder with _$SalesOrder {
     @JsonKey(name: 'x_studio_referrer_processed')
     required bool xStudioReferrerProcessed, //J,
     @JsonKey(name: 'x_studio_payment_type')
+    @BoolStringConverter()
     required String xStudioPaymentType, //K
     @JsonKey(name: 'amount_total') required double? amountTotal, // L
     @JsonKey(name: 'delivery_status') required dynamic deliveryStatus, //M
