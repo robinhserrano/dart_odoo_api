@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:dart_odoo_api/models/aws_product_stocks_model.dart';
+import 'package:dart_odoo_api/models/odoo_accounting_model.dart';
 import 'package:dio/dio.dart';
 import 'package:dart_odoo_api/env.dart';
 import 'package:dart_odoo_api/models/sales_record_model.dart';
@@ -24,6 +27,7 @@ Future<void> main() async {
     print(
         '_ Login Success! : ${loginEnd.difference(loginStart).inMilliseconds}');
 
+    var accounting = await odooRepo.fetchAccounting();
     //warehouse Fetch from Odoo
     var warehouseStart = DateTime.now();
     print('fetching warehouse...');
@@ -95,7 +99,7 @@ Future<void> main() async {
     if (sales != null) {
       var uploadStart = DateTime.now();
       print('uploading sales...');
-      await saveAwsSalesBulk(sales, (value) {
+      await saveAwsSalesBulk(sales, accounting, (value) {
         print('Progress :$value');
         print(
             'Time Taken : ${DateTime.now().difference(uploadStart).inMilliseconds}');
@@ -218,6 +222,7 @@ Future<void> main() async {
 
 Future<bool> saveAwsSalesBulk(
   List<SalesOrder> sales,
+  List<OdooAccounting> accounting,
   void Function(double) onProgress,
 ) async {
   Repository repo = Repository(client: Dio());
@@ -226,6 +231,21 @@ Future<bool> saveAwsSalesBulk(
   try {
     final dataList = <Map<String, dynamic>>[];
     for (final salesOrder in sales) {
+      String? paymentStatus;
+
+      try {
+        paymentStatus = accounting
+            .firstWhere((e) =>
+                cleanString(e.invoiceOrigin ?? 'a') ==
+                cleanString(salesOrder.name ?? 'b'))
+            .paymentState;
+      } catch (e) {
+        continue;
+      }
+
+      String? invoicePaymentStatus =
+          salesOrder.xStudioInvoicePaymentStatus ?? paymentStatus;
+
       dataList.add({
         'amount_to_invoice': salesOrder.amountToInvoice,
         'amount_total': salesOrder.amountTotal,
@@ -239,8 +259,7 @@ Future<bool> saveAwsSalesBulk(
         'partner_id_phone': salesOrder.partnerId?.phone,
         'state': salesOrder.state,
         'x_studio_commission_paid': salesOrder.xStudioCommissionPaid ? 1 : 0,
-        'x_studio_invoice_payment_status':
-            salesOrder.xStudioInvoicePaymentStatus,
+        'x_studio_invoice_payment_status': invoicePaymentStatus,
         'x_studio_payment_type': salesOrder.xStudioPaymentType,
         'x_studio_referrer_processed':
             salesOrder.xStudioReferrerProcessed ? 1 : 0,
@@ -416,4 +435,8 @@ Future<bool> saveAwsProductStocks(
   } catch (e) {
     return false;
   }
+}
+
+String cleanString(String str) {
+  return str.trim().replaceAll(RegExp(r'\s+'), ' ').toLowerCase();
 }

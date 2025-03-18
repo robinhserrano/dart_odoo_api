@@ -15,6 +15,20 @@ class BoolStringConverter extends JsonConverter<String, dynamic> {
   dynamic toJson(String object) => object;
 }
 
+class BoolStringConverterNullable extends JsonConverter<String?, dynamic> {
+  const BoolStringConverterNullable();
+
+  @override
+  String? fromJson(dynamic json) {
+    // if (json is bool?) return json.toString() ?? 'false';
+    if (json is String) return json;
+    return null;
+  }
+
+  @override
+  dynamic toJson(String? object) => object;
+}
+
 class BoolRefferedByConverter extends JsonConverter<DisplayNameModel, dynamic> {
   const BoolRefferedByConverter();
 

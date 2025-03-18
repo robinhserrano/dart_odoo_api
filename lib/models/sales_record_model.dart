@@ -32,7 +32,8 @@ class SalesOrder with _$SalesOrder {
     @JsonKey(name: 'delivery_status') required dynamic deliveryStatus, //M
     @JsonKey(name: 'amount_to_invoice') required double? amountToInvoice, //N
     @JsonKey(name: 'x_studio_invoice_payment_status')
-    required dynamic xStudioInvoicePaymentStatus, //O
+    @BoolStringConverterNullable()
+    required String? xStudioInvoicePaymentStatus, //O
     @JsonKey(name: 'internal_note_display') //P
     required String? internalNoteDisplay,
     required String? state,

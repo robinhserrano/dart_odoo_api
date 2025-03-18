@@ -1,6 +1,7 @@
 // ignore_for_file: inference_failure_on_collection_literal
 
 import 'package:dart_odoo_api/models/aws_product_stocks_model.dart';
+import 'package:dart_odoo_api/models/odoo_accounting_model.dart';
 import 'package:dart_odoo_api/models/project_tasks_model.dart';
 import 'package:dart_odoo_api/models/sales_record_model.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
@@ -315,6 +316,122 @@ class OdooRepository {
       return parsedData;
     } catch (e) {
       return null;
+    }
+  }
+
+    Future<List<OdooAccounting>> fetchAccounting() async {
+    final startTime = DateTime.now();
+    // _logger.info('Starting accounting fetch operation');
+
+    final specification = {
+      "name": {},
+      "invoice_origin": {},
+      "invoice_date": {},
+      "payment_state": {},
+      "activity_date_deadline": {},
+      "partner_id": {
+        "fields": {
+          "display_name": {},
+          "contact_address": {},
+          "phone": {},
+          "email": {},
+          "state_id": {},
+        },
+      },
+      "activity_summary": {},
+    };
+
+    final domain = [
+      "&",
+      "&",
+      [
+        "move_type",
+        "in",
+        ["out_invoice", "out_refund", "out_recei pt"],
+      ],
+      ["journal_id", "=", 8],
+      "&",
+      ["state", "=", "posted"],
+      [
+        "payment_state",
+        "in",
+        ["in_payment", "paid"],
+      ],
+    ];
+
+    // _logger.fine('Using domain: $domain');
+    // _logger.fine('Using specification: $specification');
+
+    try {
+      List<OdooAccounting> allRecords = [];
+      int offset = 0;
+      const int limit = 1000;
+      bool hasMoreRecords = true;
+      int batchNumber = 1;
+
+      while (hasMoreRecords) {
+        final batchStartTime = DateTime.now();
+        // _logger.info(
+        //   'Fetching accounting batch #$batchNumber (offset: $offset, limit: $limit)',
+        // );
+
+        final response = await client.callKw({
+          'model': 'account.move',
+          'method': 'web_search_read',
+          'args': [],
+          'kwargs': {
+            'domain': domain,
+            'limit': limit,
+            'offset': offset,
+            'specification': specification,
+          },
+        });
+
+        final data =
+            ((response as Map<String, dynamic>)['records'] as List<dynamic>)
+                .cast<Map<String, dynamic>>();
+
+        if (data.isEmpty) {
+          // _logger.info(
+          //   'No more accounting records found in batch #$batchNumber',
+          // );
+          hasMoreRecords = false;
+          continue;
+        }
+
+        final parsedData = data.map(OdooAccounting.fromJson).toList();
+        allRecords.addAll(parsedData);
+
+        final batchDuration = DateTime.now().difference(batchStartTime);
+        // _logger.info(
+        //   'Batch #$batchNumber: Processed ${data.length} records in ${batchDuration.inMilliseconds}ms. Total records so far: ${allRecords.length}',
+        // );
+
+        if (data.length < limit) {
+          // _logger.info(
+          //   'Reached end of data (received ${data.length} < limit $limit)',
+          // );
+          hasMoreRecords = false;
+        } else {
+          offset += limit;
+          batchNumber++;
+        }
+      }
+
+      final totalDuration = DateTime.now().difference(startTime);
+      // _logger.info(
+      //   'Successfully fetched all accounting records. Total records: ${allRecords.length}. Operation completed in ${totalDuration.inMilliseconds}ms',
+      // );
+      var hehe = allRecords.firstWhere((e)=> e.invoiceOrigin == 'S03276');
+      return allRecords;
+    } catch (e, stackTrace) {
+      final errorDuration = DateTime.now().difference(startTime);
+      // _logger.severe(
+      //   'Error fetching accounting records after ${errorDuration.inMilliseconds}ms',
+      //   e,
+      //   stackTrace,
+      // );
+      return [];
     }
   }
 }

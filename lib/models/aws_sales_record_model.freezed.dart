@@ -77,8 +77,12 @@ mixin _$AwsSalesOrder {
   @JsonKey(name: 'date_deadline')
   DateTime? get dateDeadline => throw _privateConstructorUsedError;
 
+  /// Serializes this AwsSalesOrder to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AwsSalesOrder
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $AwsSalesOrderCopyWith<AwsSalesOrder> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -139,6 +143,8 @@ class _$AwsSalesOrderCopyWithImpl<$Res, $Val extends AwsSalesOrder>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of AwsSalesOrder
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -282,6 +288,8 @@ class _$AwsSalesOrderCopyWithImpl<$Res, $Val extends AwsSalesOrder>
     ) as $Val);
   }
 
+  /// Create a copy of AwsSalesOrder
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $AwsUserCopyWith<$Res>? get user {
@@ -352,6 +360,8 @@ class __$$AwsSalesOrderImplCopyWithImpl<$Res>
       _$AwsSalesOrderImpl _value, $Res Function(_$AwsSalesOrderImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AwsSalesOrder
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -712,7 +722,7 @@ class _$AwsSalesOrderImpl implements _AwsSalesOrder {
                 other.dateDeadline == dateDeadline));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
@@ -745,7 +755,9 @@ class _$AwsSalesOrderImpl implements _AwsSalesOrder {
         dateDeadline
       ]);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AwsSalesOrder
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AwsSalesOrderImplCopyWith<_$AwsSalesOrderImpl> get copyWith =>
@@ -811,54 +823,54 @@ abstract class _AwsSalesOrder implements AwsSalesOrder {
   @override
   int? get id;
   @override
-  String? get name;
-  @override //A
+  String? get name; //A
+  @override
   @JsonKey(name: 'create_date')
-  DateTime? get createDate;
-  @override //B
+  DateTime? get createDate; //B
+  @override
   @JsonKey(name: 'updated_at')
-  DateTime? get updatedAt;
-  @override //B
+  DateTime? get updatedAt; //B
+  @override
   @JsonKey(name: 'partner_id_display_name')
-  String? get partnerIdDisplayName;
-  @override //C
+  String? get partnerIdDisplayName; //C
+  @override
   @JsonKey(name: 'partner_id_contact_address')
-  String? get partnerIdContactAddress;
-  @override //D
+  String? get partnerIdContactAddress; //D
+  @override
   @JsonKey(name: 'partner_id_phone')
-  dynamic get partnerIdPhone;
-  @override //E
+  dynamic get partnerIdPhone; //E
+  @override
   @JsonKey(name: 'x_studio_sales_rep_1')
-  String? get xStudioSalesRep1;
-  @override //F
+  String? get xStudioSalesRep1; //F
+  @override
   @JsonKey(name: 'x_studio_sales_source')
-  String? get xStudioSalesSource;
-  @override //G
+  String? get xStudioSalesSource; //G
+  @override
   @JsonKey(name: 'x_studio_commission_paid')
   @IntToBooleanConverter()
-  bool get xStudioCommissionPaid;
-  @override //H,
+  bool get xStudioCommissionPaid; //H,
 // @JsonKey(name: 'x_studio_referred_by')
 // required ReferredByModel? xStudioReferredBy,
+  @override
   @JsonKey(name: 'x_studio_referrer_processed')
   @IntToBooleanConverter()
-  bool get xStudioReferrerProcessed;
-  @override //J,
+  bool get xStudioReferrerProcessed; //J,
+  @override
   @JsonKey(name: 'x_studio_payment_type')
-  String? get xStudioPaymentType;
-  @override //K
+  String? get xStudioPaymentType; //K
+  @override
   @JsonKey(name: 'amount_total')
-  double? get amountTotal;
-  @override // L
+  double? get amountTotal; // L
+  @override
   @JsonKey(name: 'delivery_status')
-  dynamic get deliveryStatus;
-  @override //M
+  dynamic get deliveryStatus; //M
+  @override
   @JsonKey(name: 'amount_to_invoice')
-  double? get amountToInvoice;
-  @override //N
+  double? get amountToInvoice; //N
+  @override
   @JsonKey(name: 'x_studio_invoice_payment_status')
-  dynamic get xStudioInvoicePaymentStatus;
-  @override //O
+  dynamic get xStudioInvoicePaymentStatus; //O
+  @override
   @JsonKey(name: 'internal_note_display')
   String? get internalNoteDisplay;
   @override
@@ -890,8 +902,11 @@ abstract class _AwsSalesOrder implements AwsSalesOrder {
   @override
   @JsonKey(name: 'date_deadline')
   DateTime? get dateDeadline;
+
+  /// Create a copy of AwsSalesOrder
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AwsSalesOrderImplCopyWith<_$AwsSalesOrderImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -915,8 +930,12 @@ mixin _$AwsOrderLine {
   @JsonKey(name: 'tax_excl')
   num? get taxExcl => throw _privateConstructorUsedError;
 
+  /// Serializes this AwsOrderLine to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AwsOrderLine
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $AwsOrderLineCopyWith<AwsOrderLine> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -950,6 +969,8 @@ class _$AwsOrderLineCopyWithImpl<$Res, $Val extends AwsOrderLine>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of AwsOrderLine
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1038,6 +1059,8 @@ class __$$AwsOrderLineImplCopyWithImpl<$Res>
       _$AwsOrderLineImpl _value, $Res Function(_$AwsOrderLineImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AwsOrderLine
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1165,12 +1188,14 @@ class _$AwsOrderLineImpl implements _AwsOrderLine {
             (identical(other.taxExcl, taxExcl) || other.taxExcl == taxExcl));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, product, description,
       quantity, delivered, invoiced, unitPrice, taxes, disc, taxExcl);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AwsOrderLine
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AwsOrderLineImplCopyWith<_$AwsOrderLineImpl> get copyWith =>
@@ -1224,8 +1249,11 @@ abstract class _AwsOrderLine implements AwsOrderLine {
   @override
   @JsonKey(name: 'tax_excl')
   num? get taxExcl;
+
+  /// Create a copy of AwsOrderLine
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AwsOrderLineImplCopyWith<_$AwsOrderLineImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

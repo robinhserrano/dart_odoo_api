@@ -30,8 +30,12 @@ mixin _$ProjectTasks {
   @BoolRefferedByConverter()
   DisplayNameModel? get saleLineId => throw _privateConstructorUsedError;
 
+  /// Serializes this ProjectTasks to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ProjectTasks
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ProjectTasksCopyWith<ProjectTasks> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -65,6 +69,8 @@ class _$ProjectTasksCopyWithImpl<$Res, $Val extends ProjectTasks>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ProjectTasks
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -93,6 +99,8 @@ class _$ProjectTasksCopyWithImpl<$Res, $Val extends ProjectTasks>
     ) as $Val);
   }
 
+  /// Create a copy of ProjectTasks
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $DisplayNameModelCopyWith<$Res>? get saleLineId {
@@ -136,6 +144,8 @@ class __$$ProjectTasksImplCopyWithImpl<$Res>
       _$ProjectTasksImpl _value, $Res Function(_$ProjectTasksImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ProjectTasks
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -213,12 +223,14 @@ class _$ProjectTasksImpl implements _ProjectTasks {
                 other.saleLineId == saleLineId));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, id, name, dateDeadline, saleLineId);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ProjectTasks
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ProjectTasksImplCopyWith<_$ProjectTasksImpl> get copyWith =>
@@ -259,8 +271,11 @@ abstract class _ProjectTasks implements ProjectTasks {
   @JsonKey(name: 'sale_line_id')
   @BoolRefferedByConverter()
   DisplayNameModel? get saleLineId;
+
+  /// Create a copy of ProjectTasks
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ProjectTasksImplCopyWith<_$ProjectTasksImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

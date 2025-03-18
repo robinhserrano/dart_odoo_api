@@ -29,7 +29,8 @@ _$SalesOrderImpl _$$SalesOrderImplFromJson(Map<String, dynamic> json) =>
       amountTotal: (json['amount_total'] as num?)?.toDouble(),
       deliveryStatus: json['delivery_status'],
       amountToInvoice: (json['amount_to_invoice'] as num?)?.toDouble(),
-      xStudioInvoicePaymentStatus: json['x_studio_invoice_payment_status'],
+      xStudioInvoicePaymentStatus: const BoolStringConverterNullable()
+          .fromJson(json['x_studio_invoice_payment_status']),
       internalNoteDisplay: json['internal_note_display'] as String?,
       state: json['state'] as String?,
       userId: const BoolRefferedByConverter().fromJson(json['user_id']),
@@ -64,7 +65,8 @@ Map<String, dynamic> _$$SalesOrderImplToJson(_$SalesOrderImpl instance) =>
       'amount_total': instance.amountTotal,
       'delivery_status': instance.deliveryStatus,
       'amount_to_invoice': instance.amountToInvoice,
-      'x_studio_invoice_payment_status': instance.xStudioInvoicePaymentStatus,
+      'x_studio_invoice_payment_status': const BoolStringConverterNullable()
+          .toJson(instance.xStudioInvoicePaymentStatus),
       'internal_note_display': instance.internalNoteDisplay,
       'state': instance.state,
       'user_id': _$JsonConverterToJson<dynamic, DisplayNameModel>(
